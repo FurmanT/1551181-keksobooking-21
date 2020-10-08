@@ -9,8 +9,8 @@ const IMAGES = ["http://o0.github.io/assets/images/tokyo/hotel1.jpg",
 ];
 const Y_INIT = 130;
 const Y_HEIGTH = 630;
-
-
+const WIDTH = 50;
+const HEIGTH = 70;
 
 const getRandomBetween = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -22,7 +22,7 @@ const getRandomNumber = function (max) {
 const getRandomArray = function (array) {
   let count = getRandomBetween(1, array.length);
   let newArray = [];
-  for (let i = 1; i <= count; i++) {
+  for (let i = 0; i < count; i++) {
     let result = false;
     do {
       let index = getRandomBetween(0, array.length - 1);
@@ -33,7 +33,7 @@ const getRandomArray = function (array) {
     } while (result === false);
   }
   return newArray;
-}
+};
 
 const createArrayAdvertising = function () {
   let array = [];
@@ -63,28 +63,28 @@ const createArrayAdvertising = function () {
         });
   }
   return array;
-}
+};
 
 let blockMap = document.querySelector(".map");
 blockMap.classList.remove('map--faded');
 
 let mapListElement = blockMap.querySelector(`.map__pins`);
-let advertisingTemplate = document.querySelector(`#pin`)
+const advertisingTemplate = document.querySelector(`#pin`)
   .content
   .querySelector(`.map__pin`);
 
 const renderAdvertising = function (advertising) {
-  let advertisingElement = advertisingTemplate.cloneNode(true);
-  advertisingElement.querySelector(`img`).alt = advertising.offer.title;
-  advertisingElement.querySelector(`img`).src = advertising.author.avatar;
-  // advertisingElement.style = `left: ${advertising.location.x - (Width / 2) }px; top: ${advertising.location.y - Height}px;`;
-  advertisingElement.style = `left: ${advertising.location.x}px; top: ${advertising.location.y}px;`;
+  const advertisingElement = advertisingTemplate.cloneNode(true);
+  const img = advertisingElement.querySelector(`img`);
+  img.alt = advertising.offer.title;
+  img.src = advertising.author.avatar;
+  advertisingElement.style = `left: ${advertising.location.x - (WIDTH / 2) }px; top: ${advertising.location.y - HEIGTH}px;`;
   return advertisingElement;
 };
 
 const createFragment = function () {
-  let fragment = document.createDocumentFragment();
-  let arrayAdvertising = createArrayAdvertising();
+  const fragment = document.createDocumentFragment();
+  const arrayAdvertising = createArrayAdvertising();
   arrayAdvertising.forEach((item) => {
     fragment.appendChild(renderAdvertising(item));
   });
