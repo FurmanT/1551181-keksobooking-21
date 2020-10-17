@@ -24,7 +24,10 @@ const fieldRoom = adForm.querySelector('#room_number');
 const fieldCapacity = adForm.querySelector('#capacity');
 const mapListElement = blockMap.querySelector(`.map__pins`);
 const mainPin = mapListElement.querySelector('.map__pin--main');
-
+const elemetTimeIn = document.getElementById("timein");
+const elemetTimeOut = document.getElementById("timeout");
+const elementType = document.getElementById("type");
+const elementPrice = document.getElementById("price");
 
 const getDescTypeHousing = function (type) {
   switch (type) {
@@ -36,6 +39,20 @@ const getDescTypeHousing = function (type) {
       return "Дом";
     case "palace":
       return "Дворец";
+    default: return "";
+  }
+};
+
+const getPriceTypeHousing = function (type) {
+  switch (type) {
+    case "bungalow":
+      return "0";
+    case "flat":
+      return "1 000";
+    case "house":
+      return "5 000";
+    case "palace":
+      return "10 000";
     default: return "";
   }
 };
@@ -99,11 +116,12 @@ const advertisingTemplate = document.querySelector(`#pin`)
   .content
   .querySelector(`.map__pin`);
 
-const renderAdvertising = function (advertising) {
+const renderAdvertising = function (advertising, index) {
   const advertisingElement = advertisingTemplate.cloneNode(true);
   const img = advertisingElement.querySelector(`img`);
   img.alt = advertising.offer.title;
   img.src = advertising.author.avatar;
+  img.setAttribute("data-id", index);
   advertisingElement.style = `left: ${advertising.location.x + (WIDTH / 2)}px; top: ${advertising.location.y + HEIGTH}px;`;
   return advertisingElement;
 };
@@ -111,15 +129,33 @@ const renderAdvertising = function (advertising) {
 const createFragment = function () {
   const fragment = document.createDocumentFragment();
 
-  arrayAdvertising.forEach((item) => {
-    fragment.appendChild(renderAdvertising(item));
+  arrayAdvertising.forEach((item, index) => {
+    fragment.appendChild(renderAdvertising(item, index));
   });
   return fragment;
 };
 
+
+const deleteCard = function (evt) {
+  evt.preventDefault();
+  const elementCard = mapListElement.querySelector(".map__card");
+  elementCard.remove();
+};
+
 const setActiveMap = function () {
   mapListElement.appendChild(createFragment());
-  mapListElement.appendChild(createFragmentCard());
+
+  mapListElement.addEventListener("click", function (evt) {
+    let dataId = evt.target.getAttribute("data-id");
+    if (evt.target.tagName === "IMG" && dataId) {
+      const elementCard = mapListElement.querySelector(".map__card");
+      if (!elementCard) {
+        mapListElement.appendChild(createFragmentCard(arrayAdvertising[dataId]));
+        const elementClosePopup = mapListElement.querySelector(".popup__close");
+        elementClosePopup.addEventListener('click', deleteCard);
+      }
+    }
+  });
 };
 
 const setMoveAddressFieldAd = function () {
@@ -160,6 +196,17 @@ const setActiveState = function () {
       });
       fieldsetFilterForm.disabled = false;
       setActiveMap();
+      elemetTimeIn.addEventListener("change", function () {
+        elemetTimeOut.value = elemetTimeIn.value;
+      });
+      elemetTimeOut.addEventListener("change", function () {
+        elemetTimeIn.value = elemetTimeOut.value;
+      });
+      elementType.addEventListener("change", function () {
+        let price = getPriceTypeHousing(elementType.value);
+        elementPrice.setAttribute("minlength", price);
+        elementPrice.setAttribute("placeholder", price);
+      });
       active = true;
     }
   };
@@ -183,7 +230,7 @@ mainPin.addEventListener('keydown', function (evt) {
 
 fieldRoom.addEventListener("change", function () {
   if (fieldCapacity.value !== fieldRoom.value) {
-    fieldRoom.setCustomValidity("Укажите соответствующее количестве");
+    fieldRoom.setCustomValidity("Укажите соответствующее количество");
   } else {
     fieldRoom.setCustomValidity("");
   }
@@ -275,9 +322,9 @@ const renderCard = function (item) {
   return cardElement;
 };
 
-const createFragmentCard = function () {
+const createFragmentCard = function (item) {
   const fragment = document.createDocumentFragment();
-  fragment.appendChild(renderCard(arrayAdvertising[0]));
+  fragment.appendChild(renderCard(item));
   return fragment;
 };
 
