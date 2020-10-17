@@ -52,28 +52,28 @@ const createArrayAdvertising = function () {
   let array = [];
   for (let i = 1; i <= COUNT; i++) {
     array.push(
-      {
-        "author": {
-          "avatar": `img/avatars/user0${i}.png`
-        },
-        "offer": {
-          "title": "Заголовок предложения",
-          "address": "600, 350",
-          "price": 50,
-          "type": TYPE[getRandomNumber(TYPE.length)],
-          "rooms": 5,
-          "guests": 5,
-          "checkin": CHECK_TIME[getRandomNumber(CHECK_TIME.length)],
-          "checkout": CHECK_TIME[getRandomNumber(CHECK_TIME.length)],
-          "features": getRandomArray(FEATURES),
-          "description": "Описание",
-          "photos": getRandomArray(IMAGES),
-        },
-        "location": {
-          "x": getRandomBetween(0, blockMap.offsetWidth),
-          "y": getRandomBetween(Y_INIT, Y_HEIGTH),
-        }
-      });
+        {
+          "author": {
+            "avatar": `img/avatars/user0${i}.png`
+          },
+          "offer": {
+            "title": "Заголовок предложения",
+            "address": "600, 350",
+            "price": 50,
+            "type": TYPE[getRandomNumber(TYPE.length)],
+            "rooms": 5,
+            "guests": 5,
+            "checkin": CHECK_TIME[getRandomNumber(CHECK_TIME.length)],
+            "checkout": CHECK_TIME[getRandomNumber(CHECK_TIME.length)],
+            "features": getRandomArray(FEATURES),
+            "description": "Описание",
+            "photos": getRandomArray(IMAGES),
+          },
+          "location": {
+            "x": getRandomBetween(0, blockMap.offsetWidth),
+            "y": getRandomBetween(Y_INIT, Y_HEIGTH),
+          }
+        });
   }
   return array;
 };
@@ -104,16 +104,17 @@ const setActiveMap = function () {
   mapListElement.appendChild(createFragment());
 };
 
+setActiveMap();
 
 const setMoveAddressFieldAd = function () {
-  let x = parseInt(mainPin.style.left) + MAIN_PIN_WIDTH / 2;
-  let y = parseInt(mainPin.style.top) + MAIN_PIN_HEIGTH;
+  let x = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
+  let y = parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGTH;
   addressField.value = Math.floor(x) + ',' + Math.floor(y);
 };
 
 const setInitAddressFieldAd = function () {
-  let x = parseInt(mainPin.style.left) + MAIN_PIN_WIDTH / 2;
-  let y = parseInt(mainPin.style.top) + MAIN_PIN_HEIGTH / 2;
+  let x = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
+  let y = parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGTH / 2;
   addressField.value = Math.floor(x) + ',' + Math.floor(y);
 };
 
