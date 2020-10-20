@@ -13,7 +13,7 @@
     img.alt = advertising.offer.title;
     img.src = advertising.author.avatar;
     img.setAttribute("data-id", index);
-    advertisingElement.style = `left: ${advertising.location.x + (WIDTH / 2)}px; top: ${advertising.location.y + HEIGTH}px;`;
+    advertisingElement.style = `left: ${advertising.location.x - (WIDTH / 2)}px; top: ${advertising.location.y - HEIGTH}px;`;
     return advertisingElement;
   };
 
