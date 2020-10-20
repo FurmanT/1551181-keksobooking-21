@@ -43,7 +43,7 @@
     return array;
   };
 
-  window.date = {
+  window.data = {
     createArrayAdvertising: createArrayAdvertising,
   };
 })();

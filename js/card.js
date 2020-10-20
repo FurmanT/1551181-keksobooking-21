@@ -5,7 +5,7 @@
     .content
     .querySelector(`.map__card`);
 
-  const renderCard = function (item) {
+  const render = function (item) {
     const cardElement = cardTemplate.cloneNode(true);
     const title = cardElement.querySelector(`.popup__title`);
     if (item.offer.title) {
@@ -86,13 +86,13 @@
     return cardElement;
   };
 
-  const createFragmentCard = function (item) {
+  const create = function (item) {
     const fragment = document.createDocumentFragment();
-    fragment.appendChild(renderCard(item));
+    fragment.appendChild(render(item));
     return fragment;
   };
 
   window.card = {
-    createCard: createFragmentCard,
+    create: create,
   };
 })();
