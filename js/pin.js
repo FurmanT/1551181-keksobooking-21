@@ -19,7 +19,6 @@
 
   const create = function (arrayAdvertising) {
     const fragment = document.createDocumentFragment();
-
     arrayAdvertising.forEach((item, index) => {
       fragment.appendChild(renderAdvertising(item, index));
     });
