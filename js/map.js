@@ -5,22 +5,38 @@
   const blockMap = document.querySelector(".map");
   const mapListElement = blockMap.querySelector(`.map__pins`);
   const mainPin = mapListElement.querySelector('.map__pin--main');
+  const Y_INIT_MAP = 130;
+  const Y_HEIGTH_MAP = 630;
 
-  const setActiveMap = function () {
-    blockMap.classList.remove("map--faded");
-    const arrayAdvertising = window.data.createArrayAdvertising();
-    mapListElement.appendChild(window.pin.create(arrayAdvertising));
+  const createAdvertisingPin = function (array) {
+    mapListElement.appendChild(window.pin.create(array));
     mapListElement.addEventListener("click", function (evt) {
       let dataId = evt.target.getAttribute("data-id");
       if (evt.target.tagName === "IMG" && dataId) {
         const elementCard = mapListElement.querySelector(".map__card");
         if (!elementCard) {
-          mapListElement.appendChild(window.card.create(arrayAdvertising[dataId]));
+          mapListElement.appendChild(window.card.create(array[dataId]));
           const elementClosePopup = mapListElement.querySelector(".popup__close");
           elementClosePopup.addEventListener('click', deleteCard);
         }
       }
     });
+  };
+
+  const onErrorGetData = function (error) {
+    const node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+    node.textContent = error;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  const setActiveMap = function () {
+    blockMap.classList.remove("map--faded");
+    window.server.getData(createAdvertisingPin, onErrorGetData);
   };
 
   const deleteCard = function (evt) {
@@ -31,7 +47,7 @@
 
   const fnActiveState = window.page.setActiveState();
 
-  mainPin.addEventListener('mousedown', function (evt) {
+  const moveMainPin = function (evt) {
     if (evt.button === 0) {
       evt.preventDefault();
       fnActiveState();
@@ -43,17 +59,20 @@
 
       const onMouseMove = function (moveEvt) {
         moveEvt.preventDefault();
-        if (moveEvt.clientY > 130 && moveEvt.clientY < 630) {
-          let shift = {
-            x: startCoords.x - moveEvt.clientX,
-            y: startCoords.y - moveEvt.clientY,
-          };
+        const infoBlockMap = blockMap.getClientRects();
+        const blockMapWidth = infoBlockMap[0].width;
+        let shift = {
+          x: startCoords.x - moveEvt.clientX,
+          y: startCoords.y - moveEvt.clientY,
+        };
 
-          startCoords = {
-            x: moveEvt.clientX,
-            y: moveEvt.clientY
-          };
-
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+        const X = mainPin.offsetLeft - shift.x;
+        const Y = mainPin.offsetTop - shift.y;
+        if (X > 0 && X < blockMapWidth - MAIN_PIN_WIDTH && Y > Y_INIT_MAP - MAIN_PIN_HEIGTH && Y < Y_HEIGTH_MAP) {
           mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
           mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
           window.form.setMoveAddressFieldAd();
@@ -71,7 +90,9 @@
       document.addEventListener('mouseup', onMouseUp);
 
     }
-  });
+  };
+
+  mainPin.addEventListener('mousedown', moveMainPin);
 
   mainPin.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter') {
