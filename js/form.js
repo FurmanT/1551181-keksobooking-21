@@ -17,6 +17,7 @@
   const elementPrice = document.getElementById("price");
   const MAIN_PIN_WIDTH = window.map.getSizeMainPin().width;
   const MAIN_PIN_HEIGTH = window.map.getSizeMainPin().heigth;
+  const elementMain = document.getElementsByTagName('main')[0];
 
   const setMoveAddressFieldAd = function () {
     let x = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
@@ -69,6 +70,45 @@
       fieldRoom.reportValidity();
     });
   };
+
+  const deleteElementError = function (evt) {
+    evt.preventDefault();
+    const elementError = elementMain.querySelector(".error");
+    elementError.remove();
+    document.removeEventListener('click', deleteElementError);
+    document.removeEventListener('keydown', deleteElementError);
+  };
+
+  const onErrorSubmit = function (text) {
+    const elementError = window.resultSend.showError(text);
+    elementMain.append(elementError);
+    document.addEventListener("click", deleteElementError);
+    document.addEventListener("keydown", deleteElementError);
+  };
+
+  const deleteElementSuccess = function (evt) {
+    evt.preventDefault();
+    const elementSuccess = elementMain.querySelector(".success");
+    elementSuccess.remove();
+    document.removeEventListener('click', deleteElementSuccess);
+    document.removeEventListener('keydown', deleteElementSuccess);
+  };
+
+  const onSuccessSubmitForm = function () {
+    elementMain.append(window.resultSend.showSuccess());
+    document.addEventListener("click", deleteElementSuccess);
+    document.addEventListener("keydown", deleteElementSuccess);
+    window.page.setDisabledState();
+    adForm.reset();
+  };
+
+
+  const submitFormHandler = function (evt) {
+    evt.preventDefault();
+    window.server.uploadData(new FormData(adForm), onSuccessSubmitForm, onErrorSubmit);
+  };
+
+  adForm.addEventListener('submit', submitFormHandler);
 
   window.form = {
     setDisable: setDisable,
