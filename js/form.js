@@ -102,10 +102,13 @@
     adForm.reset();
   };
 
-
   const submitFormHandler = function (evt) {
     evt.preventDefault();
-    window.server.uploadData(new FormData(adForm), onSuccessSubmitForm, onErrorSubmit);
+    try {
+      window.server.uploadData(new FormData(adForm), onSuccessSubmitForm, onErrorSubmit);
+    } catch (error) {
+      onErrorSubmit(`Ошибка: ${error.message}`);
+    }
   };
 
   adForm.addEventListener('submit', submitFormHandler);
