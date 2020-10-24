@@ -36,7 +36,11 @@
 
   const setActiveMap = function () {
     blockMap.classList.remove("map--faded");
-    window.server.getData(createAdvertisingPin, onErrorGetData);
+    try {
+      window.server.loadData(createAdvertisingPin, onErrorGetData);
+    } catch (error) {
+      onErrorGetData(`Ошибка при получении данных: ${error.message}`);
+    }
   };
 
   const deleteCard = function (evt) {
