@@ -2,30 +2,34 @@
 (function () {
   const WIDTH = 50;
   const HEIGTH = 70;
+  const MAX_PIN_COUNT = 5;
 
-  const advertisingTemplate = document.querySelector(`#pin`)
+  const pinTemplate = document.querySelector(`#pin`)
     .content
     .querySelector(`.map__pin`);
 
-  const renderAdvertising = function (advertising, index) {
-    const advertisingElement = advertisingTemplate.cloneNode(true);
-    const img = advertisingElement.querySelector(`img`);
-    img.alt = advertising.offer.title;
-    img.src = advertising.author.avatar;
+  const createElementPin = function (pin, index) {
+    const pinElement = pinTemplate.cloneNode(true);
+    const img = pinElement.querySelector(`img`);
+    img.alt = pin.offer.title;
+    img.src = pin.author.avatar;
     img.setAttribute("data-id", index);
-    advertisingElement.style = `left: ${advertising.location.x - (WIDTH / 2)}px; top: ${advertising.location.y - HEIGTH}px;`;
-    return advertisingElement;
+    pinElement.style = `left: ${pin.location.x - (WIDTH / 2)}px; top: ${pin.location.y - HEIGTH}px;`;
+    return pinElement;
   };
 
-  const create = function (arrayAdvertising) {
+  const render = function (arrayPin) {
+    const count = arrayPin.length > MAX_PIN_COUNT
+      ? MAX_PIN_COUNT
+      : arrayPin.length;
     const fragment = document.createDocumentFragment();
-    arrayAdvertising.forEach((item, index) => {
-      fragment.appendChild(renderAdvertising(item, index));
-    });
+    for (let i = 0; i < count; i++) {
+      fragment.appendChild(createElementPin(arrayPin[i], i));
+    }
     return fragment;
   };
 
   window.pin = {
-    create: create,
+    render: render,
   };
 })();
