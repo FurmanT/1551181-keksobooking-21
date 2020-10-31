@@ -7,17 +7,38 @@
   const mainPin = mapListElement.querySelector('.map__pin--main');
   const Y_INIT_MAP = 130;
   const Y_HEIGTH_MAP = 630;
+  let allPins = [];
+  const filterHousingElement = document.getElementById('housing-type');
 
-  const createAdvertisingPin = function (array) {
-    mapListElement.appendChild(window.pin.create(array));
+  const onEventFilterByTypeHousing = function (evt) {
+    const filterarray = allPins.filter(function (pin) {
+      return pin.offer.type === evt.target.value;
+    });
+    createPinOnMap(filterarray.length !== 0 ? filterarray : allPins);
+  };
+
+  const onSuccessGetData = function (data) {
+    allPins = data;
+    createPinOnMap(allPins);
+  };
+
+  const createPinOnMap = function (arrayPin) {
+    window.card.deleteCard();
+    const courrentPinElement = mapListElement.querySelectorAll(".map__pin");
+    courrentPinElement.forEach(function (item, key) {
+      if (key !== 0) {
+        item.remove();
+      }
+    });
+    mapListElement.appendChild(window.pin.render(arrayPin));
     mapListElement.addEventListener("click", function (evt) {
       let dataId = evt.target.getAttribute("data-id");
       if (evt.target.tagName === "IMG" && dataId) {
         const elementCard = mapListElement.querySelector(".map__card");
         if (!elementCard) {
-          mapListElement.appendChild(window.card.create(array[dataId]));
+          mapListElement.appendChild(window.card.create(arrayPin[dataId]));
           const elementClosePopup = mapListElement.querySelector(".popup__close");
-          elementClosePopup.addEventListener('click', deleteCard);
+          elementClosePopup.addEventListener('click', deleteEvenCard);
         }
       }
     });
@@ -37,16 +58,16 @@
   const setActiveMap = function () {
     blockMap.classList.remove("map--faded");
     try {
-      window.server.loadData(createAdvertisingPin, onErrorGetData);
+      window.server.loadData(onSuccessGetData, onErrorGetData);
+      filterHousingElement.addEventListener("change", onEventFilterByTypeHousing);
     } catch (error) {
       onErrorGetData(`Ошибка при получении данных: ${error.message}`);
     }
   };
 
-  const deleteCard = function (evt) {
+  const deleteEvenCard = function (evt) {
     evt.preventDefault();
-    const elementCard = mapListElement.querySelector(".map__card");
-    elementCard.remove();
+    window.card.deleteCard();
   };
 
   const fnActiveState = window.page.setActiveState();

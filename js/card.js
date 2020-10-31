@@ -1,5 +1,7 @@
 'use strict';
 (function () {
+  const blockMap = document.querySelector(".map");
+  const mapListElement = blockMap.querySelector(`.map__pins`);
 
   const cardTemplate = document.querySelector(`#card`)
     .content
@@ -92,7 +94,15 @@
     return fragment;
   };
 
+  const deleteCard = function () {
+    const elementCard = mapListElement.querySelector(".map__card");
+    if (elementCard) {
+      elementCard.remove();
+    }
+  };
+
   window.card = {
     create: create,
+    deleteCard: deleteCard,
   };
 })();
