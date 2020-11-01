@@ -70,7 +70,7 @@
     createPinOnMap();
   };
 
-  function eventShowPin(evt) {
+  const eventShowPin = function (evt) {
     let dataId = evt.target.getAttribute("data-id");
     if (evt.target.tagName === "IMG" && dataId) {
       const elementCard = mapListElement.querySelector(".map__card");
