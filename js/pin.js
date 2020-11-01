@@ -19,9 +19,7 @@
   };
 
   const render = function (arrayPin) {
-    const count = arrayPin.length > MAX_PIN_COUNT
-      ? MAX_PIN_COUNT
-      : arrayPin.length;
+    const count = Math.min(arrayPin.length, MAX_PIN_COUNT);
     const fragment = document.createDocumentFragment();
     for (let i = 0; i < count; i++) {
       fragment.appendChild(createElementPin(arrayPin[i], i));

@@ -10,54 +10,65 @@
   let allPins = [];
   const filterForm = blockMap.querySelector('.map__filters');
   let filterArray = [];
-  let type;
-  let rooms;
-  let guests;
-  let features = [];
+  const elementFieldSet = filterForm.querySelector("fieldset");
+  const elementFeatures = elementFieldSet.querySelectorAll(".map__checkbox");
 
   const filterChangeHandler = function (evt) {
     let filter = allPins;
+    let features = [];
+    elementFeatures.forEach(function (el) {
+      if (el.checked) {
+        features.push(el.value);
+      }
+    });
+
     switch (evt.target.name) {
       case "housing-type":
-        type = evt.target.value;
-        break;
-      case "housing-rooms":
-        rooms = evt.target.value;
-        break;
-      case "housing-guests":
-        guests = evt.target.value;
-        break;
-      case "features":
-        const index = features.indexOf(evt.target.value);
-        if (index !== -1) {
-          features.splice(index, 1);
-        } else {
-          features.push(evt.target.value);
+        if (evt.target.value && evt.target.value !== "any") {
+          filter = filter.filter(function (pin) {
+            return pin.offer.type === evt.target.value;
+          });
         }
         break;
-    }
-
-    if (type && type !== "any") {
-      filter = filter.filter(function (pin) {
-        return pin.offer.type === type;
-      });
-    }
-    if (rooms && rooms !== "any") {
-      filter = filter.filter(function (pin) {
-        return pin.offer.rooms === parseInt(rooms, 10);
-      });
-    }
-    if (guests && guests !== "any") {
-      filter = filter.filter(function (pin) {
-        return pin.offer.guests === parseInt(guests, 10);
-      });
-    }
-    if (features.length !== 0) {
-      filter = filter.filter(function (pin) {
-        return features.every(function (element) {
-          return pin.offer.features.indexOf(element) !== -1;
-        });
-      });
+      case "housing-price":
+        if (evt.target.value && evt.target.value !== "any") {
+          filter = filter.filter(function (pin) {
+            if (evt.target.value === "middle") {
+              return parseInt(pin.offer.price, 10) > 10000 && parseInt(pin.offer.price, 10) < 50000;
+            }
+            if (evt.target.value === "low") {
+              return parseInt(pin.offer.price, 10) < 10000;
+            }
+            if (evt.target.value === "high") {
+              return parseInt(pin.offer.price, 10) > 10000;
+            }
+            return true;
+          });
+        }
+        break;
+      case "housing-rooms":
+        if (evt.target.value && evt.target.value !== "any") {
+          filter = filter.filter(function (pin) {
+            return pin.offer.rooms === parseInt(evt.target.value, 10);
+          });
+        }
+        break;
+      case "housing-guests":
+        if (evt.target.value && evt.target.value !== "any") {
+          filter = filter.filter(function (pin) {
+            return pin.offer.guests === parseInt(evt.target.value, 10);
+          });
+        }
+        break;
+      case "features":
+        if (features.length !== 0) {
+          filter = filter.filter(function (pin) {
+            return features.every(function (element) {
+              return pin.offer.features.indexOf(element) !== -1;
+            });
+          });
+        }
+        break;
     }
     filterArray = filter;
     window.debounce(createPinOnMap);
