@@ -8,64 +8,115 @@
   const Y_INIT_MAP = 130;
   const Y_HEIGTH_MAP = 630;
   let allPins = [];
-  const filterHousingElement = document.getElementById('housing-type');
+  const filterForm = blockMap.querySelector('.map__filters');
+  let filterArray = [];
+  const elementFieldSet = filterForm.querySelector("fieldset");
+  const elementFeatures = elementFieldSet.querySelectorAll(".map__checkbox");
 
-  const onEventFilterByTypeHousing = function (evt) {
-    const filterarray = allPins.filter(function (pin) {
-      return pin.offer.type === evt.target.value;
+  const filterChangeHandler = function (evt) {
+    let filter = allPins;
+    let features = [];
+    elementFeatures.forEach(function (el) {
+      if (el.checked) {
+        features.push(el.value);
+      }
     });
-    createPinOnMap(filterarray.length !== 0 ? filterarray : allPins);
+
+    switch (evt.target.name) {
+      case "housing-type":
+        if (evt.target.value && evt.target.value !== "any") {
+          filter = filter.filter(function (pin) {
+            return pin.offer.type === evt.target.value;
+          });
+        }
+        break;
+      case "housing-price":
+        if (evt.target.value && evt.target.value !== "any") {
+          filter = filter.filter(function (pin) {
+            if (evt.target.value === "middle") {
+              return parseInt(pin.offer.price, 10) > 10000 && parseInt(pin.offer.price, 10) < 50000;
+            }
+            if (evt.target.value === "low") {
+              return parseInt(pin.offer.price, 10) < 10000;
+            }
+            if (evt.target.value === "high") {
+              return parseInt(pin.offer.price, 10) > 10000;
+            }
+            return true;
+          });
+        }
+        break;
+      case "housing-rooms":
+        if (evt.target.value && evt.target.value !== "any") {
+          filter = filter.filter(function (pin) {
+            return pin.offer.rooms === parseInt(evt.target.value, 10);
+          });
+        }
+        break;
+      case "housing-guests":
+        if (evt.target.value && evt.target.value !== "any") {
+          filter = filter.filter(function (pin) {
+            return pin.offer.guests === parseInt(evt.target.value, 10);
+          });
+        }
+        break;
+      case "features":
+        if (features.length !== 0) {
+          filter = filter.filter(function (pin) {
+            return features.every(function (element) {
+              return pin.offer.features.indexOf(element) !== -1;
+            });
+          });
+        }
+        break;
+    }
+    filterArray = filter;
+    window.debounce(createPinOnMap);
   };
+
 
   const onSuccessGetData = function (data) {
     allPins = data;
-    createPinOnMap(allPins);
+    filterArray = data;
+    createPinOnMap();
   };
 
-  const createPinOnMap = function (arrayPin) {
+  const eventShowPin = function (evt) {
+    let dataId = evt.target.getAttribute("data-id");
+    if (evt.target.tagName === "IMG" && dataId) {
+      const elementCard = mapListElement.querySelector(".map__card");
+      if (!elementCard) {
+        mapListElement.appendChild(window.card.create(filterArray[dataId]));
+        const elementClosePopup = mapListElement.querySelector(".popup__close");
+        elementClosePopup.addEventListener('click', deleteEventCard);
+      }
+    }
+  };
+
+  const createPinOnMap = function () {
+    mapListElement.removeEventListener("click", eventShowPin);
     window.card.deleteCard();
-    const courrentPinElement = mapListElement.querySelectorAll(".map__pin");
-    courrentPinElement.forEach(function (item, key) {
+    const currentPinElement = mapListElement.querySelectorAll(".map__pin");
+    currentPinElement.forEach(function (item, key) {
       if (key !== 0) {
         item.remove();
       }
     });
-    mapListElement.appendChild(window.pin.render(arrayPin));
-    mapListElement.addEventListener("click", function (evt) {
-      let dataId = evt.target.getAttribute("data-id");
-      if (evt.target.tagName === "IMG" && dataId) {
-        const elementCard = mapListElement.querySelector(".map__card");
-        if (!elementCard) {
-          mapListElement.appendChild(window.card.create(arrayPin[dataId]));
-          const elementClosePopup = mapListElement.querySelector(".popup__close");
-          elementClosePopup.addEventListener('click', deleteEvenCard);
-        }
-      }
-    });
-  };
-
-  const onErrorGetData = function (error) {
-    const node = document.createElement('div');
-    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-    node.style.position = 'absolute';
-    node.style.left = 0;
-    node.style.right = 0;
-    node.style.fontSize = '30px';
-    node.textContent = error;
-    document.body.insertAdjacentElement('afterbegin', node);
+    mapListElement.appendChild(window.pin.render(filterArray));
+    mapListElement.addEventListener("click", eventShowPin);
   };
 
   const setActiveMap = function () {
     blockMap.classList.remove("map--faded");
     try {
-      window.server.loadData(onSuccessGetData, onErrorGetData);
-      filterHousingElement.addEventListener("change", onEventFilterByTypeHousing);
+      window.server.loadData(onSuccessGetData, window.utils.showErrorOnBody);
+      filterForm.addEventListener('change', filterChangeHandler);
     } catch (error) {
-      onErrorGetData(`Ошибка при получении данных: ${error.message}`);
+      window.utils.showErrorOnBody(`Ошибка при получении данных: ${error.message}`);
     }
   };
 
-  const deleteEvenCard = function (evt) {
+  const deleteEventCard = function (evt) {
     evt.preventDefault();
     window.card.deleteCard();
   };
