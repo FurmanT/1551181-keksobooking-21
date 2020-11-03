@@ -1,5 +1,4 @@
 'use strict';
-(function () {
 
   const errorTemplate = document.querySelector(`#error`)
     .content
@@ -37,4 +36,3 @@
     showError: showError,
     showSuccess: showSuccess,
   };
-})();

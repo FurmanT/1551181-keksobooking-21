@@ -1,5 +1,5 @@
 'use strict';
-(function () {
+
   const setDisabledState = function () {
     window.form.setDisable();
     window.form.setInitAddressFieldAd();
@@ -20,6 +20,4 @@
     setDisabledState: setDisabledState,
     setActiveState: setActiveState,
   };
-
-})();
 

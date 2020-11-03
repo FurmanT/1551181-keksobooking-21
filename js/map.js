@@ -1,5 +1,5 @@
 'use strict';
-(function () {
+
   const MAIN_PIN_WIDTH = 65;
   const MAIN_PIN_HEIGTH = 65;
   const blockMap = document.querySelector(".map");
@@ -185,4 +185,4 @@
     },
     setActive: setActiveMap,
   };
-})();
+

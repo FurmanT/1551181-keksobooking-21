@@ -1,6 +1,5 @@
 'use strict';
 
-(function () {
   const DEBOUNCE_INTERVAL = 500; // ms
 
   let lastTimeout;
@@ -11,4 +10,4 @@
     }
     lastTimeout = window.setTimeout(cb, DEBOUNCE_INTERVAL);
   };
-})();
+

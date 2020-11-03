@@ -1,5 +1,4 @@
 'use strict';
-(function () {
   const getDescTypeHousing = function (type) {
     switch (type) {
       case "flat":
@@ -71,6 +70,5 @@
     getRandomArray: getRandomArray,
     showErrorOnBody: showErrorOnBody,
   };
-})();
 
 

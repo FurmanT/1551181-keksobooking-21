@@ -1,5 +1,4 @@
 'use strict';
-(function () {
   const blockMap = document.querySelector(".map");
   const mapListElement = blockMap.querySelector(`.map__pins`);
 
@@ -105,4 +104,4 @@
     create: create,
     deleteCard: deleteCard,
   };
-})();
+

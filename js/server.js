@@ -1,6 +1,4 @@
 'use strict';
-(function () {
-
   const loadData = function (onSuccess, onError) {
     const xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
@@ -64,5 +62,4 @@
     loadData: loadData,
     uploadData: uploadData,
   };
-})();
 

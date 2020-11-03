@@ -1,5 +1,5 @@
 'use strict';
-(function () {
+
   const adForm = document.querySelector('.ad-form');
   const elementFieldsetsAdForm = adForm.querySelectorAll("fieldset");
   const filterForm = document.querySelector('.map__filters');
@@ -119,4 +119,3 @@
     setInitAddressFieldAd: setInitAddressFieldAd,
     setMoveAddressFieldAd: setMoveAddressFieldAd,
   };
-})();

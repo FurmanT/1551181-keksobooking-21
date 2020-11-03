@@ -1,5 +1,4 @@
 'use strict';
-(function () {
   const WIDTH = 50;
   const HEIGTH = 70;
   const MAX_PIN_COUNT = 5;
@@ -30,4 +29,4 @@
   window.pin = {
     render: render,
   };
-})();
+
