@@ -1,23 +1,23 @@
 'use strict';
 
-  const setDisabledState = function () {
-    window.form.setDisable();
-    window.form.setInitAddressFieldAd();
-  };
+const setDisabledState = function () {
+  window.form.setDisable();
+  window.form.setInitAddressFieldAd();
+};
 
-  const setActiveState = function () {
-    let active = false;
-    return function () {
-      if (!active) {
-        window.form.setActive();
-        window.map.setActive();
-        active = true;
-      }
-    };
+const setActiveState = function () {
+  let active = false;
+  return function () {
+    if (!active) {
+      window.form.setActive();
+      window.map.setActive();
+      active = true;
+    }
   };
+};
 
-  window.page = {
-    setDisabledState: setDisabledState,
-    setActiveState: setActiveState,
-  };
+window.page = {
+  setDisabledState: setDisabledState,
+  setActiveState: setActiveState,
+};
 
