@@ -9,6 +9,7 @@ module.exports = {
     "./js/debounce.js",
     "./js/map.js",
     "./js/resultSend.js",
+    "./js/file.js",
     "./js/form.js",
     "./js/main.js",
     "./js/server.js"
