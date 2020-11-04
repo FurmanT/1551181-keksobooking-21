@@ -23,6 +23,7 @@ const previewAvatarFile = adForm.querySelector('.ad-form-header__preview img');
 const photoHousingFile = adForm.querySelector('.ad-form__upload input[type=file]');
 const previewHousingFile = adForm.querySelector('.ad-form__photo');
 const defaultAvatarPath = previewAvatarFile.src;
+const elementResetForm = adForm.querySelector(".ad-form__reset");
 
 const setMoveAddressFieldAd = function () {
   let x = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
@@ -44,6 +45,14 @@ const setDisable = function () {
     element.disabled = true;
   });
   fieldsetFilterForm.disabled = true;
+};
+
+const resetFiles = function () {
+  previewAvatarFile.src = defaultAvatarPath;
+  const imgPreviewHousingFile = previewHousingFile.querySelector("img");
+  if (imgPreviewHousingFile) {
+    imgPreviewHousingFile.remove();
+  }
 };
 
 const setActive = function () {
@@ -76,6 +85,9 @@ const setActive = function () {
   });
   window.file.addPreview(avatarFile, previewAvatarFile);
   window.file.addPreview(photoHousingFile, previewHousingFile);
+  elementResetForm.addEventListener("click", function () {
+    resetFiles();
+  });
 };
 
 const deleteElementError = function (evt) {
@@ -108,9 +120,7 @@ const onSuccessSubmitForm = function () {
   window.page.setDisabledState();
   adForm.reset();
   filterForm.reset();
-  previewAvatarFile.src = defaultAvatarPath;
-  const imgPreviewHousingFile = previewHousingFile.querySelector("img");
-  imgPreviewHousingFile.remove();
+  resetFiles();
 };
 
 const submitFormHandler = function (evt) {

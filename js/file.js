@@ -19,6 +19,10 @@ const addPreview = function (elementFile, elementPreviewFile) {
         if (elementPreviewFile.tagName === "IMG") {
           elementPreviewFile.src = reader.result;
         } else {
+          const currentImg = elementPreviewFile.querySelector("img");
+          if (currentImg) {
+            currentImg.remove();
+          }
           const elementImg = document.createElement("img");
           elementImg.setAttribute("alt", "Фотография");
           elementImg.setAttribute("width", elementPreviewFile.offsetWidth);
