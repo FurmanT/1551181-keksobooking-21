@@ -18,6 +18,11 @@ const elementPrice = document.getElementById("price");
 const MAIN_PIN_WIDTH = window.map.getSizeMainPin().width;
 const MAIN_PIN_HEIGTH = window.map.getSizeMainPin().heigth;
 const elementMain = document.getElementsByTagName('main')[0];
+const avatarFile = adForm.querySelector('.ad-form__field input[type=file]');
+const previewAvatarFile = adForm.querySelector('.ad-form-header__preview img');
+const photoHousingFile = adForm.querySelector('.ad-form__upload input[type=file]');
+const previewHousingFile = adForm.querySelector('.ad-form__photo');
+const defaultAvatarPath = previewAvatarFile.src;
 
 const setMoveAddressFieldAd = function () {
   let x = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
@@ -69,6 +74,8 @@ const setActive = function () {
     }
     fieldRoom.reportValidity();
   });
+  window.file.addPreview(avatarFile, previewAvatarFile);
+  window.file.addPreview(photoHousingFile, previewHousingFile);
 };
 
 const deleteElementError = function (evt) {
@@ -100,6 +107,10 @@ const onSuccessSubmitForm = function () {
   document.addEventListener("keydown", deleteElementSuccess);
   window.page.setDisabledState();
   adForm.reset();
+  filterForm.reset();
+  previewAvatarFile.src = defaultAvatarPath;
+  const imgPreviewHousingFile = previewHousingFile.querySelector("img");
+  imgPreviewHousingFile.remove();
 };
 
 const submitFormHandler = function (evt) {
