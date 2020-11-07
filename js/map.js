@@ -12,6 +12,13 @@ const filterForm = blockMap.querySelector('.map__filters');
 let filterArray = [];
 const elementFieldSet = filterForm.querySelector("fieldset");
 const elementFeatures = elementFieldSet.querySelectorAll(".map__checkbox");
+const X_INITIAL_MAIN_PIN = mainPin.style.left;
+const Y_INITIAL_MAIN_PIN = mainPin.style.top;
+
+const setInitPointMainPin = function () {
+  mainPin.style.left = X_INITIAL_MAIN_PIN;
+  mainPin.style.top = Y_INITIAL_MAIN_PIN;
+};
 
 const filterChangeHandler = function (evt) {
   let filter = allPins;
@@ -74,27 +81,27 @@ const filterChangeHandler = function (evt) {
   window.debounce(createPinOnMap);
 };
 
-
 const onSuccessGetData = function (data) {
   allPins = data;
   filterArray = data;
   createPinOnMap();
 };
 
-const eventShowPin = function (evt) {
+const eventShowCardPin = function (evt) {
   let dataId = evt.target.getAttribute("data-id");
   if (evt.target.tagName === "IMG" && dataId) {
     const elementCard = mapListElement.querySelector(".map__card");
-    if (!elementCard) {
-      mapListElement.appendChild(window.card.create(filterArray[dataId]));
-      const elementClosePopup = mapListElement.querySelector(".popup__close");
-      elementClosePopup.addEventListener('click', deleteEventCard);
+    if (elementCard) {
+      elementCard.remove();
     }
+    mapListElement.appendChild(window.card.create(filterArray[dataId]));
+    const elementClosePopup = mapListElement.querySelector(".popup__close");
+    elementClosePopup.addEventListener('click', deleteEventCard);
   }
 };
 
 const createPinOnMap = function () {
-  mapListElement.removeEventListener("click", eventShowPin);
+  mapListElement.removeEventListener("click", eventShowCardPin);
   window.card.deleteCard();
   const currentPinElement = mapListElement.querySelectorAll(".map__pin");
   currentPinElement.forEach(function (item, key) {
@@ -103,7 +110,17 @@ const createPinOnMap = function () {
     }
   });
   mapListElement.appendChild(window.pin.render(filterArray));
-  mapListElement.addEventListener("click", eventShowPin);
+  mapListElement.addEventListener("click", eventShowCardPin);
+};
+
+const deletePinFromMap = function () {
+  window.card.deleteCard();
+  const currentPinElement = mapListElement.querySelectorAll(".map__pin");
+  currentPinElement.forEach(function (item, key) {
+    if (key !== 0) {
+      item.remove();
+    }
+  });
 };
 
 const setActiveMap = function () {
@@ -183,6 +200,7 @@ window.map = {
       heigth: MAIN_PIN_HEIGTH
     };
   },
+  setInitPointMainPin: setInitPointMainPin,
   setActive: setActiveMap,
+  deletePinFromMap: deletePinFromMap,
 };
-

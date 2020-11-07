@@ -1,7 +1,7 @@
 'use strict';
 
 const setDisabledState = function () {
-  window.form.setDisable();
+  window.form.setInitDisable();
   window.form.setInitAddressFieldAd();
 };
 

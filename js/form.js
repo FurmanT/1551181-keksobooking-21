@@ -4,7 +4,7 @@ const adForm = document.querySelector('.ad-form');
 const elementFieldsetsAdForm = adForm.querySelectorAll("fieldset");
 const filterForm = document.querySelector('.map__filters');
 const elementSelectsFilterForm = filterForm.querySelectorAll("select");
-const fieldsetFilterForm = filterForm.querySelectorAll("fieldset");
+const fieldsetFilterForm = filterForm.querySelector("fieldset");
 const addressField = adForm.querySelector("#address");
 const fieldRoom = adForm.querySelector('#room_number');
 const fieldCapacity = adForm.querySelector('#capacity');
@@ -37,7 +37,7 @@ const setInitAddressFieldAd = function () {
   addressField.value = Math.floor(x) + ',' + Math.floor(y);
 };
 
-const setDisable = function () {
+const setInitDisable = function () {
   elementFieldsetsAdForm.forEach(function (element) {
     element.disabled = true;
   });
@@ -45,6 +45,17 @@ const setDisable = function () {
     element.disabled = true;
   });
   fieldsetFilterForm.disabled = true;
+
+};
+
+const setFullDisable = function () {
+  setInitDisable();
+  adForm.reset();
+  filterForm.reset();
+  resetFiles();
+  window.map.setInitPointMainPin();
+  setInitAddressFieldAd();
+  window.map.deletePinFromMap();
 };
 
 const resetFiles = function () {
@@ -53,6 +64,40 @@ const resetFiles = function () {
   if (imgPreviewHousingFile) {
     imgPreviewHousingFile.remove();
   }
+};
+
+const checkRooms = function () {
+  switch (fieldRoom.value) {
+    case "1":
+      if (fieldCapacity.value === "1") {
+        fieldCapacity.setCustomValidity("");
+      } else {
+        fieldCapacity.setCustomValidity("Укажите соответствующее количество");
+      }
+      break;
+    case "2":
+      if (["1", "2"].indexOf(fieldCapacity.value) !== -1) {
+        fieldCapacity.setCustomValidity("");
+      } else {
+        fieldCapacity.setCustomValidity("Укажите соответствующее количество");
+      }
+      break;
+    case "3":
+      if (["1", "2", "3"].indexOf(fieldCapacity.value) !== -1) {
+        fieldCapacity.setCustomValidity("");
+      } else {
+        fieldCapacity.setCustomValidity("Укажите соответствующее количество");
+      }
+      break;
+    case "100":
+      if (fieldCapacity.value === "0") {
+        fieldCapacity.setCustomValidity("");
+      } else {
+        fieldCapacity.setCustomValidity("Укажите соответствующее количество");
+      }
+      break;
+  }
+  fieldCapacity.reportValidity();
 };
 
 const setActive = function () {
@@ -75,18 +120,13 @@ const setActive = function () {
     elementPrice.setAttribute("minlength", price);
     elementPrice.setAttribute("placeholder", price);
   });
-  fieldRoom.addEventListener("change", function () {
-    if (fieldCapacity.value !== fieldRoom.value) {
-      fieldRoom.setCustomValidity("Укажите соответствующее количество");
-    } else {
-      fieldRoom.setCustomValidity("");
-    }
-    fieldRoom.reportValidity();
-  });
+  fieldCapacity.addEventListener("change", checkRooms);
+  fieldRoom.addEventListener("change", checkRooms);
+  fieldCapacity.value = fieldRoom.value;
   window.file.addPreview(avatarFile, previewAvatarFile);
   window.file.addPreview(photoHousingFile, previewHousingFile);
   elementResetForm.addEventListener("click", function () {
-    resetFiles();
+    setFullDisable();
   });
 };
 
@@ -117,10 +157,7 @@ const onSuccessSubmitForm = function () {
   elementMain.append(window.resultSend.showSuccess());
   document.addEventListener("click", deleteElementSuccess);
   document.addEventListener("keydown", deleteElementSuccess);
-  window.page.setDisabledState();
-  adForm.reset();
-  filterForm.reset();
-  resetFiles();
+  setFullDisable();
 };
 
 const submitFormHandler = function (evt) {
@@ -135,7 +172,7 @@ const submitFormHandler = function (evt) {
 adForm.addEventListener('submit', submitFormHandler);
 
 window.form = {
-  setDisable: setDisable,
+  setInitDisable: setInitDisable,
   setActive: setActive,
   setInitAddressFieldAd: setInitAddressFieldAd,
   setMoveAddressFieldAd: setMoveAddressFieldAd,
