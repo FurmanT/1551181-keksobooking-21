@@ -90,8 +90,16 @@ const onSuccessGetData = function (data) {
 };
 
 const onMapListElementClick = function (evt) {
-  let dataId = evt.target.getAttribute("data-id");
-  if (evt.target.tagName === "IMG" && dataId) {
+  let dataId;
+  if (evt.target.tagName === "BUTTON") {
+    dataId = evt.target.getAttribute("data-id");
+    evt.target.classList.add("map__pin--active");
+  }
+  if (evt.target.tagName === "IMG" && evt.path[1].tagName === "BUTTON") {
+    dataId = evt.path[1].getAttribute("data-id");
+    evt.path[1].classList.add("map__pin--active");
+  }
+  if (dataId) {
     const elementCard = mapListElement.querySelector(".map__card");
     if (elementCard) {
       elementCard.remove();
@@ -100,24 +108,6 @@ const onMapListElementClick = function (evt) {
     const elementClosePopup = mapListElement.querySelector(".popup__close");
     elementClosePopup.addEventListener('click', onElementClosePopupClick);
     document.addEventListener('keydown', onDocumentKeyDown);
-  }
-
-};
-
-const onMapListElementKeyDown = function (evt) {
-  if (evt.key === 'Enter') {
-    let dataId = evt.target.getAttribute("data-id");
-
-    if (evt.target.tagName === "IMG" && dataId) {
-      const elementCard = mapListElement.querySelector(".map__card");
-      if (elementCard) {
-        elementCard.remove();
-      }
-      mapListElement.appendChild(window.card.create(filterArray[dataId]));
-      const elementClosePopup = mapListElement.querySelector(".popup__close");
-      elementClosePopup.addEventListener('click', onElementClosePopupClick);
-      document.addEventListener('keydown', onDocumentKeyDown);
-    }
   }
 };
 
@@ -132,11 +122,10 @@ const createPin = function () {
   });
   mapListElement.appendChild(window.pin.render(filterArray));
   mapListElement.addEventListener("click", onMapListElementClick);
-  mapListElement.addEventListener("keydown", onMapListElementKeyDown);
 };
 
 const deletePin = function () {
-  window.card.deleteCard();
+  window.card.remove();
   const currentPinElement = mapListElement.querySelectorAll(".map__pin");
   currentPinElement.forEach(function (item, key) {
     if (key !== 0) {
@@ -173,6 +162,8 @@ const onDocumentKeyDown = function (evt) {
 
 const closeCard = function () {
   window.card.remove();
+  const activePin = mapListElement.querySelector(".map__pin--active");
+  activePin.classList.remove("map__pin--active");
   document.removeEventListener('keydown', onElementClosePopupClick);
   document.removeEventListener('keydown', onDocumentKeyDown);
 };
@@ -204,10 +195,9 @@ const onMainPinMouseDown = function (evt) {
       };
       const x = mainPin.offsetLeft - shift.x;
       const y = mainPin.offsetTop - shift.y;
-
-
       if (x > 0 - MAIN_PIN_WIDTH / 2 && x < blockMapWidth - MAIN_PIN_WIDTH / 2 &&
-        y > Y_INIT_MAP - MAIN_PIN_HEIGTH && y < Y_HEIGTH_MAP - 22) {
+        y > Y_INIT_MAP - MAIN_PIN_HEIGTH &&
+        y < Y_HEIGTH_MAP - MAIN_PIN_HEIGTH) {
 
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';

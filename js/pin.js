@@ -9,10 +9,10 @@ const pinTemplate = document.querySelector(`#pin`)
 
 const createElementPin = function (pin, index) {
   const pinElement = pinTemplate.cloneNode(true);
+  pinElement.setAttribute("data-id", index);
   const img = pinElement.querySelector(`img`);
   img.alt = pin.offer.title;
   img.src = pin.author.avatar;
-  img.setAttribute("data-id", index);
   pinElement.style = `left: ${pin.location.x - (WIDTH / 2)}px; top: ${pin.location.y - HEIGTH}px;`;
   return pinElement;
 };
