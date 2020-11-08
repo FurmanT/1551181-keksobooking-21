@@ -1,5 +1,6 @@
 'use strict';
-
+const MAIN_PIN_WIDTH = window.map.getSizeMainPin().width;
+const MAIN_PIN_HEIGTH = window.map.getSizeMainPin().heigth;
 const adForm = document.querySelector('.ad-form');
 const elementFieldsetsAdForm = adForm.querySelectorAll("fieldset");
 const filterForm = document.querySelector('.map__filters');
@@ -15,8 +16,6 @@ const elemetTimeIn = document.getElementById("timein");
 const elemetTimeOut = document.getElementById("timeout");
 const elementType = document.getElementById("type");
 const elementPrice = document.getElementById("price");
-const MAIN_PIN_WIDTH = window.map.getSizeMainPin().width;
-const MAIN_PIN_HEIGTH = window.map.getSizeMainPin().heigth;
 const elementMain = document.getElementsByTagName('main')[0];
 const avatarFile = adForm.querySelector('.ad-form__field input[type=file]');
 const previewAvatarFile = adForm.querySelector('.ad-form-header__preview img');
@@ -45,11 +44,11 @@ const setInitDisable = function () {
     element.disabled = true;
   });
   fieldsetFilterForm.disabled = true;
-
+  adForm.classList.add("ad-form--disabled");
 };
 
 const setFullDisable = function () {
-  setInitDisable();
+  window.page.setDisabledState();
   adForm.reset();
   filterForm.reset();
   resetFiles();
@@ -64,6 +63,18 @@ const resetFiles = function () {
   if (imgPreviewHousingFile) {
     imgPreviewHousingFile.remove();
   }
+};
+
+const onElementPriceChange = function (evt) {
+  const value = evt.target.value.replace(/\s/g, '');
+  const min = evt.target.getAttribute("minlength").replace(/\s/g, '');
+  const max = evt.target.getAttribute("maxlength").replace(/\s/g, '');
+  if (parseInt(value, 10) < parseInt(min, 10) || parseInt(value, 10) > parseInt(max, 10)) {
+    elementPrice.setCustomValidity("Укажите соответствующее количество");
+  } else {
+    elementPrice.setCustomValidity("");
+  }
+  elementPrice.reportValidity();
 };
 
 const checkRooms = function () {
@@ -100,6 +111,12 @@ const checkRooms = function () {
   fieldCapacity.reportValidity();
 };
 
+const setMinLengthPrice = function () {
+  const price = window.utils.getPriceTypeHousing(elementType.value);
+  elementPrice.setAttribute("minlength", price);
+  elementPrice.setAttribute("placeholder", price);
+};
+
 const setActive = function () {
   adForm.classList.remove("ad-form--disabled");
   elementFieldsetsAdForm.forEach(function (element) {
@@ -116,33 +133,38 @@ const setActive = function () {
     elemetTimeIn.value = elemetTimeOut.value;
   });
   elementType.addEventListener("change", function () {
-    let price = window.utils.getPriceTypeHousing(elementType.value);
-    elementPrice.setAttribute("minlength", price);
-    elementPrice.setAttribute("placeholder", price);
+    setMinLengthPrice();
   });
-  fieldCapacity.addEventListener("change", checkRooms);
-  fieldRoom.addEventListener("change", checkRooms);
+
+  elementPrice.addEventListener("change", onElementPriceChange);
+  fieldCapacity.addEventListener("change", function () {
+    checkRooms();
+  });
+  fieldRoom.addEventListener("change", function () {
+    checkRooms();
+  });
   fieldCapacity.value = fieldRoom.value;
   window.file.addPreview(avatarFile, previewAvatarFile);
   window.file.addPreview(photoHousingFile, previewHousingFile);
   elementResetForm.addEventListener("click", function () {
     setFullDisable();
   });
+  setMinLengthPrice();
 };
 
-const deleteElementError = function (evt) {
+const onDocumentClick = function (evt) {
   evt.preventDefault();
   const elementError = elementMain.querySelector(".error");
   elementError.remove();
-  document.removeEventListener('click', deleteElementError);
-  document.removeEventListener('keydown', deleteElementError);
+  document.removeEventListener('click', onDocumentClick);
+  document.removeEventListener('keydown', onDocumentClick);
 };
 
-const onErrorSubmit = function (text) {
+const onErrorAdFormSubmit = function (text) {
   const elementError = window.resultSend.showError(text);
   elementMain.append(elementError);
-  document.addEventListener("click", deleteElementError);
-  document.addEventListener("keydown", deleteElementError);
+  document.addEventListener("click", onDocumentClick);
+  document.addEventListener("keydown", onDocumentClick);
 };
 
 const deleteElementSuccess = function (evt) {
@@ -153,23 +175,23 @@ const deleteElementSuccess = function (evt) {
   document.removeEventListener('keydown', deleteElementSuccess);
 };
 
-const onSuccessSubmitForm = function () {
+const onSuccessAdFormSubmit = function () {
   elementMain.append(window.resultSend.showSuccess());
   document.addEventListener("click", deleteElementSuccess);
   document.addEventListener("keydown", deleteElementSuccess);
   setFullDisable();
 };
 
-const submitFormHandler = function (evt) {
+const onAdFormSubmit = function (evt) {
   evt.preventDefault();
   try {
-    window.server.uploadData(new FormData(adForm), onSuccessSubmitForm, onErrorSubmit);
+    window.server.uploadData(new FormData(adForm), onSuccessAdFormSubmit, onErrorAdFormSubmit);
   } catch (error) {
-    onErrorSubmit(`Ошибка: ${error.message}`);
+    onErrorAdFormSubmit(`Ошибка: ${error.message}`);
   }
 };
 
-adForm.addEventListener('submit', submitFormHandler);
+adForm.addEventListener('submit', onAdFormSubmit);
 
 window.form = {
   setInitDisable: setInitDisable,

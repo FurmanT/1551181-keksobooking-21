@@ -3,6 +3,7 @@
 const setDisabledState = function () {
   window.form.setInitDisable();
   window.form.setInitAddressFieldAd();
+  window.map.setDisable();
 };
 
 const setActiveState = function () {

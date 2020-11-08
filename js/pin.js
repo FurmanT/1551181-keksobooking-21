@@ -20,9 +20,12 @@ const createElementPin = function (pin, index) {
 const render = function (arrayPin) {
   const count = Math.min(arrayPin.length, MAX_PIN_COUNT);
   const fragment = document.createDocumentFragment();
-  for (let i = 0; i < count; i++) {
-    fragment.appendChild(createElementPin(arrayPin[i], i));
-  }
+  const arrCount = Array.from({length: count}, function (v, i) {
+    return i;
+  });
+  arrCount.forEach(function (item) {
+    fragment.appendChild(createElementPin(arrayPin[item], item));
+  });
   return fragment;
 };
 

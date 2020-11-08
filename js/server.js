@@ -1,7 +1,15 @@
 'use strict';
+const URL_GET_DATA = "https://21.javascript.pages.academy/keksobooking/data";
+const URL_POST_DATA = "https://21.javascript.pages.academy/keksobooking";
+const RESPONSE_TYPE = 'json';
+const RequestMethod = {
+  POST: "POST",
+  GET: "GET",
+};
+
 const loadData = function (onSuccess, onError) {
   const xhr = new XMLHttpRequest();
-  xhr.responseType = 'json';
+  xhr.responseType = RESPONSE_TYPE;
 
   xhr.addEventListener('load', function () {
     let error;
@@ -25,13 +33,13 @@ const loadData = function (onSuccess, onError) {
   xhr.addEventListener('error', function () {
     onError('Произошла ошибка соединения');
   });
-  xhr.open('GET', "https://21.javascript.pages.academy/keksobooking/data");
+  xhr.open(RequestMethod.GET, URL_GET_DATA);
   xhr.send();
 };
 
 const uploadData = function (data, onSuccess, onError) {
   const xhr = new XMLHttpRequest();
-  xhr.responseType = 'json';
+  xhr.responseType = RESPONSE_TYPE;
   xhr.addEventListener('load', function () {
     let error;
     switch (xhr.status) {
@@ -54,7 +62,7 @@ const uploadData = function (data, onSuccess, onError) {
   xhr.addEventListener('error', function () {
     onError('Произошла ошибка соединения');
   });
-  xhr.open('POST', "https://21.javascript.pages.academy/keksobooking");
+  xhr.open(RequestMethod.POST, URL_POST_DATA);
   xhr.send(data);
 };
 

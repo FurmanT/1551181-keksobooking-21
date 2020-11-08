@@ -47,15 +47,17 @@ const render = function (item) {
     time.hidden = true;
   }
   const elementFeatures = cardElement.querySelector(`.popup__features`);
+
   if (item.offer.features) {
     const featuresPopup = elementFeatures.querySelectorAll(".popup__feature");
+    const classFeatures = item.offer.features.map(function (name) {
+      return "popup__feature--" + name;
+    });
+
     featuresPopup.forEach((feature) => {
-      item.offer.features.forEach((name) => {
-        if (!feature.classList.contains("popup__feature--" + name)) {
-          feature.remove();
-        }
+      if (classFeatures.indexOf(feature.classList[1]) === -1) {
+        feature.remove();
       }
-      );
     });
   } else {
     elementFeatures.hidden = true;
@@ -93,7 +95,7 @@ const create = function (item) {
   return fragment;
 };
 
-const deleteCard = function () {
+const remove = function () {
   const elementCard = mapListElement.querySelector(".map__card");
   if (elementCard) {
     elementCard.remove();
@@ -102,6 +104,6 @@ const deleteCard = function () {
 
 window.card = {
   create: create,
-  deleteCard: deleteCard,
+  remove: remove,
 };
 

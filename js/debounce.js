@@ -1,6 +1,6 @@
 'use strict';
 
-const DEBOUNCE_INTERVAL = 500; // ms
+const DEBOUNCE_INTERVAL = 500;
 
 let lastTimeout;
 
