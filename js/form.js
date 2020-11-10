@@ -24,40 +24,40 @@ const previewHousingFile = adForm.querySelector('.ad-form__photo');
 const defaultAvatarPath = previewAvatarFile.src;
 const elementResetForm = adForm.querySelector(".ad-form__reset");
 
-const setMoveAddressFieldAd = function () {
+const setMoveAddressFieldAd = () => {
   let x = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
   let y = parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGTH;
   addressField.value = Math.floor(x) + ',' + Math.floor(y);
 };
 
-const setInitAddressFieldAd = function () {
+const setInitAddressFieldAd = () => {
   let x = parseInt(mainPin.style.left, 10) + MAIN_PIN_WIDTH / 2;
   let y = parseInt(mainPin.style.top, 10) + MAIN_PIN_HEIGTH / 2;
   addressField.value = Math.floor(x) + ',' + Math.floor(y);
 };
 
-const setInitDisable = function () {
-  elementFieldsetsAdForm.forEach(function (element) {
+const setInitDisable = () => {
+  elementFieldsetsAdForm.forEach((element) => {
     element.disabled = true;
   });
-  elementSelectsFilterForm.forEach(function (element) {
+  elementSelectsFilterForm.forEach((element) => {
     element.disabled = true;
   });
   fieldsetFilterForm.disabled = true;
   adForm.classList.add("ad-form--disabled");
 };
 
-const setFullDisable = function () {
+const setFullDisable = () => {
   window.page.setDisabledState();
   adForm.reset();
   filterForm.reset();
   resetFiles();
   window.map.setInitPointMainPin();
   setInitAddressFieldAd();
-  window.map.deletePinFromMap();
+  window.map.deletePin();
 };
 
-const resetFiles = function () {
+const resetFiles = () => {
   previewAvatarFile.src = defaultAvatarPath;
   const imgPreviewHousingFile = previewHousingFile.querySelector("img");
   if (imgPreviewHousingFile) {
@@ -65,7 +65,7 @@ const resetFiles = function () {
   }
 };
 
-const onElementPriceChange = function (evt) {
+const onElementPriceChange = (evt) => {
   const value = evt.target.value.replace(/\s/g, '');
   const min = evt.target.getAttribute("minlength").replace(/\s/g, '');
   const max = evt.target.getAttribute("maxlength").replace(/\s/g, '');
@@ -77,7 +77,7 @@ const onElementPriceChange = function (evt) {
   elementPrice.reportValidity();
 };
 
-const checkRooms = function () {
+const checkRooms = () => {
   switch (fieldRoom.value) {
     case "1":
       if (fieldCapacity.value === "1") {
@@ -111,48 +111,48 @@ const checkRooms = function () {
   fieldCapacity.reportValidity();
 };
 
-const setMinLengthPrice = function () {
+const setMinLengthPrice = () => {
   const price = window.utils.getPriceTypeHousing(elementType.value);
   elementPrice.setAttribute("minlength", price);
   elementPrice.setAttribute("placeholder", price);
 };
 
-const setActive = function () {
+const setActive = () => {
   adForm.classList.remove("ad-form--disabled");
-  elementFieldsetsAdForm.forEach(function (element) {
+  elementFieldsetsAdForm.forEach((element) => {
     element.disabled = false;
   });
-  elementSelectsFilterForm.forEach(function (element) {
+  elementSelectsFilterForm.forEach((element) => {
     element.disabled = false;
   });
   fieldsetFilterForm.disabled = false;
-  elemetTimeIn.addEventListener("change", function () {
+  elemetTimeIn.addEventListener("change", () => {
     elemetTimeOut.value = elemetTimeIn.value;
   });
-  elemetTimeOut.addEventListener("change", function () {
+  elemetTimeOut.addEventListener("change", () => {
     elemetTimeIn.value = elemetTimeOut.value;
   });
-  elementType.addEventListener("change", function () {
+  elementType.addEventListener("change", () => {
     setMinLengthPrice();
   });
 
   elementPrice.addEventListener("change", onElementPriceChange);
-  fieldCapacity.addEventListener("change", function () {
+  fieldCapacity.addEventListener("change", () => {
     checkRooms();
   });
-  fieldRoom.addEventListener("change", function () {
+  fieldRoom.addEventListener("change", () => {
     checkRooms();
   });
   fieldCapacity.value = fieldRoom.value;
   window.file.addPreview(avatarFile, previewAvatarFile);
   window.file.addPreview(photoHousingFile, previewHousingFile);
-  elementResetForm.addEventListener("click", function () {
+  elementResetForm.addEventListener("click", () => {
     setFullDisable();
   });
   setMinLengthPrice();
 };
 
-const onDocumentClick = function (evt) {
+const onDocumentClick = (evt) => {
   evt.preventDefault();
   const elementError = elementMain.querySelector(".error");
   elementError.remove();
@@ -160,14 +160,14 @@ const onDocumentClick = function (evt) {
   document.removeEventListener('keydown', onDocumentClick);
 };
 
-const onErrorAdFormSubmit = function (text) {
+const onErrorAdFormSubmit = (text) => {
   const elementError = window.resultSend.showError(text);
   elementMain.append(elementError);
   document.addEventListener("click", onDocumentClick);
   document.addEventListener("keydown", onDocumentClick);
 };
 
-const deleteElementSuccess = function (evt) {
+const deleteElementSuccess = (evt) => {
   evt.preventDefault();
   const elementSuccess = elementMain.querySelector(".success");
   elementSuccess.remove();
@@ -175,14 +175,14 @@ const deleteElementSuccess = function (evt) {
   document.removeEventListener('keydown', deleteElementSuccess);
 };
 
-const onSuccessAdFormSubmit = function () {
+const onSuccessAdFormSubmit = () => {
   elementMain.append(window.resultSend.showSuccess());
   document.addEventListener("click", deleteElementSuccess);
   document.addEventListener("keydown", deleteElementSuccess);
   setFullDisable();
 };
 
-const onAdFormSubmit = function (evt) {
+const onAdFormSubmit = (evt) => {
   evt.preventDefault();
   try {
     window.server.uploadData(new FormData(adForm), onSuccessAdFormSubmit, onErrorAdFormSubmit);

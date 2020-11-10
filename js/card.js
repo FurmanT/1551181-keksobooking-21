@@ -6,7 +6,7 @@ const cardTemplate = document.querySelector(`#card`)
   .content
   .querySelector(`.map__card`);
 
-const render = function (item) {
+const render = (item) => {
   const cardElement = cardTemplate.cloneNode(true);
   const title = cardElement.querySelector(`.popup__title`);
   if (item.offer.title) {
@@ -89,13 +89,13 @@ const render = function (item) {
   return cardElement;
 };
 
-const create = function (item) {
+const create = (item) => {
   const fragment = document.createDocumentFragment();
   fragment.appendChild(render(item));
   return fragment;
 };
 
-const remove = function () {
+const remove = () => {
   const elementCard = mapListElement.querySelector(".map__card");
   if (elementCard) {
     elementCard.remove();

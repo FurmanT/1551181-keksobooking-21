@@ -7,7 +7,7 @@ const pinTemplate = document.querySelector(`#pin`)
   .content
   .querySelector(`.map__pin`);
 
-const createElementPin = function (pin, index) {
+const createElementPin = (pin, index) => {
   const pinElement = pinTemplate.cloneNode(true);
   pinElement.setAttribute("data-id", index);
   const img = pinElement.querySelector(`img`);
@@ -17,13 +17,13 @@ const createElementPin = function (pin, index) {
   return pinElement;
 };
 
-const render = function (arrayPin) {
+const render = (arrayPin) => {
   const count = Math.min(arrayPin.length, MAX_PIN_COUNT);
   const fragment = document.createDocumentFragment();
-  const arrCount = Array.from({length: count}, function (v, i) {
+  const arrCount = Array.from({length: count}, (v, i) => {
     return i;
   });
-  arrCount.forEach(function (item) {
+  arrCount.forEach((item) => {
     fragment.appendChild(createElementPin(arrayPin[item], item));
   });
   return fragment;

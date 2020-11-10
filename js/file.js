@@ -2,9 +2,9 @@
 
 const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-const addPreview = function (elementFile, elementPreviewFile) {
+const addPreview = (elementFile, elementPreviewFile) => {
 
-  elementFile.addEventListener('change', function () {
+  elementFile.addEventListener('change', () => {
     const file = elementFile.files[0];
     const fileName = file.name.toLowerCase();
 
@@ -15,7 +15,7 @@ const addPreview = function (elementFile, elementPreviewFile) {
     if (matches) {
       const reader = new FileReader();
 
-      reader.addEventListener('load', function () {
+      reader.addEventListener('load', () => {
         if (elementPreviewFile.tagName === "IMG") {
           elementPreviewFile.src = reader.result;
         } else {
@@ -27,7 +27,7 @@ const addPreview = function (elementFile, elementPreviewFile) {
           elementImg.setAttribute("alt", "Фотография");
           elementImg.setAttribute("width", elementPreviewFile.offsetWidth);
           elementImg.setAttribute("height", elementPreviewFile.offsetHeight);
-          elementImg.src = reader.result;
+          elementImg.setAttribute("src", reader.result);
           elementPreviewFile.append(elementImg);
         }
       });

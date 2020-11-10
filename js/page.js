@@ -1,12 +1,12 @@
 'use strict';
 
-const setDisabledState = function () {
+const setDisabledState = () => {
   window.form.setInitDisable();
   window.form.setInitAddressFieldAd();
   window.map.setDisable();
 };
 
-const setActiveState = function () {
+const setActiveState = () => {
   let active = false;
   return function () {
     if (!active) {

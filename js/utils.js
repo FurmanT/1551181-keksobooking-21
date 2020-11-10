@@ -1,5 +1,5 @@
 'use strict';
-const getDescTypeHousing = function (type) {
+const getDescTypeHousing = (type) => {
   switch (type) {
     case "flat":
       return "Квартира";
@@ -14,7 +14,7 @@ const getDescTypeHousing = function (type) {
   }
 };
 
-const getPriceTypeHousing = function (type) {
+const getPriceTypeHousing = (type) => {
   switch (type) {
     case "bungalow":
       return "0";
@@ -29,15 +29,15 @@ const getPriceTypeHousing = function (type) {
   }
 };
 
-const getRandomBetween = function (min, max) {
+const getRandomBetween = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-const getRandomNumber = function (max) {
+const getRandomNumber = (max) => {
   return Math.floor(Math.random() * max);
 };
 
-const getRandomArray = function (array) {
+const getRandomArray = (array) => {
   let count = getRandomBetween(1, array.length);
   let newArray = [];
   for (let i = 0; i < count; i++) {
@@ -53,7 +53,7 @@ const getRandomArray = function (array) {
   return newArray;
 };
 
-const showErrorOnBody = function (error) {
+const showErrorOnBody = (error) => {
   const node = document.createElement('div');
   node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
   node.style.position = 'absolute';

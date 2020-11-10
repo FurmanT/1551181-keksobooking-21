@@ -6,11 +6,27 @@ const RequestMethod = {
   POST: "POST",
   GET: "GET",
 };
+const errorMap = {
+  400: "Неверный запрос",
+  404: "Страница не найдена",
+  200: "OK",
+};
 
-const loadData = function (onSuccess, onError) {
-  const xhr = new XMLHttpRequest();
+const loadData = (onSuccess, onError) => {
+  const xhr = createRequest(onSuccess, onError);
+  xhr.open(RequestMethod.GET, URL_GET_DATA);
+  xhr.send();
+};
+
+const uploadData = (data, onSuccess, onError) => {
+  const xhr = createRequest(onSuccess, onError);
+  xhr.open(RequestMethod.POST, URL_POST_DATA);
+  xhr.send(data);
+};
+
+const createRequest = (onSuccess, onError) => {
+  let xhr = new XMLHttpRequest();
   xhr.responseType = RESPONSE_TYPE;
-
   xhr.addEventListener('load', function () {
     let error;
     switch (xhr.status) {
@@ -18,10 +34,10 @@ const loadData = function (onSuccess, onError) {
         onSuccess(xhr.response);
         break;
       case 400:
-        error = 'Неверный запрос';
+        error = errorMap[400];
         break;
       case 404:
-        error = 'Страница не найдена';
+        error = errorMap[404];
         break;
       default:
         error = 'Cтатус ответа: : ' + xhr.status + ' ' + xhr.statusText;
@@ -30,40 +46,10 @@ const loadData = function (onSuccess, onError) {
       onError(error);
     }
   });
-  xhr.addEventListener('error', function () {
+  xhr.addEventListener('error', () => {
     onError('Произошла ошибка соединения');
   });
-  xhr.open(RequestMethod.GET, URL_GET_DATA);
-  xhr.send();
-};
-
-const uploadData = function (data, onSuccess, onError) {
-  const xhr = new XMLHttpRequest();
-  xhr.responseType = RESPONSE_TYPE;
-  xhr.addEventListener('load', function () {
-    let error;
-    switch (xhr.status) {
-      case 200:
-        onSuccess();
-        break;
-      case 400:
-        error = 'Неверный запрос';
-        break;
-      case 404:
-        error = 'Страница не найдена';
-        break;
-      default:
-        error = 'Cтатус ответа: : ' + xhr.status + ' ' + xhr.statusText;
-    }
-    if (error) {
-      onError(error);
-    }
-  });
-  xhr.addEventListener('error', function () {
-    onError('Произошла ошибка соединения');
-  });
-  xhr.open(RequestMethod.POST, URL_POST_DATA);
-  xhr.send(data);
+  return xhr;
 };
 
 window.server = {

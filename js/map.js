@@ -15,89 +15,89 @@ let allPins = [];
 const filterForm = blockMap.querySelector('.map__filters');
 let filterArray = [];
 const elementFieldSet = filterForm.querySelector("fieldset");
-const elementFeatures = elementFieldSet.querySelectorAll(".map__checkbox");
+let filters = {};
 
-const setInitPointMainPin = function () {
+const setInitPointMainPin = () => {
   mainPin.style.left = xInitialMainPin;
   mainPin.style.top = yInitialMainPin;
 };
 
-const onFilterFormChange = function (evt) {
-  let filter = allPins;
-  let features = [];
-  elementFeatures.forEach(function (el) {
-    if (el.checked) {
-      features.push(el.value);
-    }
-  });
+const pinCheck = (pin, filterType, filterValue) => {
+  const elementFeatures = elementFieldSet.querySelectorAll("input[name='features']:checked");
 
-  switch (evt.target.name) {
-    case "housing-type":
-      if (evt.target.value && evt.target.value !== ANY_ITEM) {
-        filter = filter.filter(function (pin) {
-          return pin.offer.type === evt.target.value;
-        });
+  switch (filterType) {
+    case `housing-type`:
+      if (filterValue && filterValue !== ANY_ITEM) {
+        return pin.offer.type === filterValue;
       }
       break;
-    case "housing-price":
-      if (evt.target.value && evt.target.value !== ANY_ITEM) {
-        filter = filter.filter(function (pin) {
-          if (evt.target.value === "middle") {
-            return parseInt(pin.offer.price, 10) > MIN_PRICE && parseInt(pin.offer.price, 10) < MAX_PRICE;
-          }
-          if (evt.target.value === "low") {
-            return parseInt(pin.offer.price, 10) < MIN_PRICE;
-          }
-          if (evt.target.value === "high") {
-            return parseInt(pin.offer.price, 10) > MIN_PRICE;
-          }
-          return true;
-        });
+    case `housing-price`:
+      if (filterValue && filterValue !== ANY_ITEM) {
+        if (filterValue === `middle`) {
+          return parseInt(pin.offer.price, 10) > MIN_PRICE && parseInt(pin.offer.price, 10) < MAX_PRICE;
+        }
+        if (filterValue === `low`) {
+          return parseInt(pin.offer.price, 10) < MIN_PRICE;
+        }
+        if (filterValue === `high`) {
+          return parseInt(pin.offer.price, 10) > MAX_PRICE;
+        }
+        return true;
       }
       break;
-    case "housing-rooms":
-      if (evt.target.value && evt.target.value !== ANY_ITEM) {
-        filter = filter.filter(function (pin) {
-          return pin.offer.rooms === parseInt(evt.target.value, 10);
-        });
+    case `housing-rooms`:
+      if (filterValue && filterValue !== ANY_ITEM) {
+        return pin.offer.rooms === parseInt(filterValue, 10);
       }
       break;
-    case "housing-guests":
-      if (evt.target.value && evt.target.value !== ANY_ITEM) {
-        filter = filter.filter(function (pin) {
-          return pin.offer.guests === parseInt(evt.target.value, 10);
-        });
+    case `housing-guests`:
+      if (filterValue && filterValue !== ANY_ITEM) {
+        return pin.offer.guests === parseInt(filterValue, 10);
       }
       break;
-    case "features":
-      if (features.length !== 0) {
-        filter = filter.filter(function (pin) {
-          return features.every(function (element) {
-            return pin.offer.features.indexOf(element) !== -1;
-          });
+    case `features`:
+      if (elementFeatures && elementFeatures.length !== 0) {
+        return Array.from(elementFeatures).every((element) => {
+          return pin.offer.features.indexOf(element.value) !== -1;
         });
       }
       break;
   }
-  filterArray = filter;
+  return true;
+};
+
+const onFilterFormChange = (evt) => {
+  filters[evt.target.name] = evt.target.value;
+  filterArray = [];
+  for (let i = 0; i < allPins.length; i++) {
+    if (filterArray.length < 5) {
+      let result = Object.entries(filters).every(([key, value]) => pinCheck(allPins[i], key, value));
+      if (result === true) {
+        filterArray.push(allPins[i]);
+      }
+    } else {
+      break;
+    }
+  }
   window.debounce(createPin);
 };
 
-const onSuccessGetData = function (data) {
+const onSuccessGetData = (data) => {
   allPins = data;
   filterArray = data;
   createPin();
 };
 
-const onMapListElementClick = function (evt) {
+const onMapListElementClick = (evt) => {
+  deleteActiveClassPin();
   let dataId;
   if (evt.target.tagName === "BUTTON") {
     dataId = evt.target.getAttribute("data-id");
     evt.target.classList.add("map__pin--active");
   }
-  if (evt.target.tagName === "IMG" && evt.path[1].tagName === "BUTTON") {
-    dataId = evt.path[1].getAttribute("data-id");
-    evt.path[1].classList.add("map__pin--active");
+  if (evt.target.tagName === "IMG" && evt.target.parentElement.tagName === "BUTTON") {
+    dataId = evt.target.parentElement.getAttribute("data-id");
+    evt.target.parentElement.classList.add("map__pin--active");
   }
   if (dataId) {
     const elementCard = mapListElement.querySelector(".map__card");
@@ -111,11 +111,11 @@ const onMapListElementClick = function (evt) {
   }
 };
 
-const createPin = function () {
+const createPin = () => {
   mapListElement.removeEventListener("click", onMapListElementClick);
   window.card.remove();
   const currentPinElement = mapListElement.querySelectorAll(".map__pin");
-  currentPinElement.forEach(function (item, key) {
+  currentPinElement.forEach((item, key) => {
     if (key !== 0) {
       item.remove();
     }
@@ -124,17 +124,17 @@ const createPin = function () {
   mapListElement.addEventListener("click", onMapListElementClick);
 };
 
-const deletePin = function () {
+const deletePin = () => {
   window.card.remove();
   const currentPinElement = mapListElement.querySelectorAll(".map__pin");
-  currentPinElement.forEach(function (item, key) {
+  currentPinElement.forEach((item, key) => {
     if (key !== 0) {
       item.remove();
     }
   });
 };
 
-const setActive = function () {
+const setActive = () => {
   blockMap.classList.remove("map--faded");
   try {
     window.server.loadData(onSuccessGetData, window.utils.showErrorOnBody);
@@ -144,33 +144,39 @@ const setActive = function () {
   }
 };
 
-const setDisable = function () {
+const setDisable = () => {
   blockMap.classList.add("map--faded");
 };
 
-const onElementClosePopupClick = function (evt) {
+const onElementClosePopupClick = (evt) => {
   evt.preventDefault();
   closeCard();
 };
 
-const onDocumentKeyDown = function (evt) {
+const onDocumentKeyDown = (evt) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
     closeCard();
   }
 };
 
-const closeCard = function () {
+const closeCard = () => {
+  deleteActiveClassPin();
   window.card.remove();
-  const activePin = mapListElement.querySelector(".map__pin--active");
-  activePin.classList.remove("map__pin--active");
   document.removeEventListener('keydown', onElementClosePopupClick);
   document.removeEventListener('keydown', onDocumentKeyDown);
 };
 
+const deleteActiveClassPin = () => {
+  const activePin = mapListElement.querySelector(".map__pin--active");
+  if (activePin) {
+    activePin.classList.remove("map__pin--active");
+  }
+};
+
 const fnActiveState = window.page.setActiveState();
 
-const onMainPinMouseDown = function (evt) {
+const onMainPinMouseDown = (evt) => {
   if (evt.button === 0) {
     evt.preventDefault();
     fnActiveState();
@@ -180,7 +186,7 @@ const onMainPinMouseDown = function (evt) {
       y: evt.clientY
     };
 
-    const onDocumentMouseMove = function (moveEvt) {
+    const onDocumentMouseMove = (moveEvt) => {
       moveEvt.preventDefault();
       const infoBlockMap = blockMap.getClientRects();
       const blockMapWidth = infoBlockMap[0].width;
@@ -205,7 +211,7 @@ const onMainPinMouseDown = function (evt) {
       }
     };
 
-    const onDocumentMouseUp = function (upEvt) {
+    const onDocumentMouseUp = (upEvt) => {
       upEvt.preventDefault();
       window.form.setMoveAddressFieldAd();
       document.removeEventListener('mousemove', onDocumentMouseMove);
@@ -220,14 +226,14 @@ const onMainPinMouseDown = function (evt) {
 
 mainPin.addEventListener('mousedown', onMainPinMouseDown);
 
-mainPin.addEventListener('keydown', function (evt) {
+mainPin.addEventListener('keydown', (evt) => {
   if (evt.key === 'Enter') {
     fnActiveState();
   }
 });
 
 window.map = {
-  getSizeMainPin: function () {
+  getSizeMainPin: () => {
     return {
       width: MAIN_PIN_WIDTH,
       heigth: MAIN_PIN_HEIGTH
