@@ -152,33 +152,33 @@ const setActive = () => {
   setMinLengthPrice();
 };
 
-const onDocumentClick = (evt) => {
-  evt.preventDefault();
-  const elementError = elementMain.querySelector(".error");
-  elementError.remove();
-  document.removeEventListener('click', onDocumentClick);
-  document.removeEventListener('keydown', onDocumentClick);
+const listenersDeleteHandler = (handler) => {
+  document.removeEventListener('click', handler);
+  document.removeEventListener('keydown', handler);
 };
+
+const listenersCreateHandler = (handler) => {
+  document.addEventListener('click', handler);
+  document.addEventListener('keydown', handler);
+};
+
+const handlerCreator = (selectorName) =>
+  function eventHandler(evt) {
+    evt.preventDefault();
+    const element = elementMain.querySelector(selectorName);
+    element.remove();
+    listenersDeleteHandler(eventHandler);
+  };
 
 const onErrorAdFormSubmit = (text) => {
   const elementError = window.resultSend.showError(text);
   elementMain.append(elementError);
-  document.addEventListener("click", onDocumentClick);
-  document.addEventListener("keydown", onDocumentClick);
-};
-
-const deleteElementSuccess = (evt) => {
-  evt.preventDefault();
-  const elementSuccess = elementMain.querySelector(".success");
-  elementSuccess.remove();
-  document.removeEventListener('click', deleteElementSuccess);
-  document.removeEventListener('keydown', deleteElementSuccess);
+  listenersCreateHandler(handlerCreator('.error'));
 };
 
 const onSuccessAdFormSubmit = () => {
   elementMain.append(window.resultSend.showSuccess());
-  document.addEventListener("click", deleteElementSuccess);
-  document.addEventListener("keydown", deleteElementSuccess);
+  listenersCreateHandler(handlerCreator('.success'));
   setFullDisable();
 };
 
@@ -190,6 +190,7 @@ const onAdFormSubmit = (evt) => {
     onErrorAdFormSubmit(`Ошибка: ${error.message}`);
   }
 };
+
 
 adForm.addEventListener('submit', onAdFormSubmit);
 
