@@ -30,6 +30,6 @@ const render = (arrayPin) => {
 };
 
 window.pin = {
-  render: render,
+  render,
 };
 

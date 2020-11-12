@@ -7,18 +7,12 @@ const setDisabledState = () => {
 };
 
 const setActiveState = () => {
-  let active = false;
-  return function () {
-    if (!active) {
-      window.form.setActive();
-      window.map.setActive();
-      active = true;
-    }
-  };
+  window.form.setActive();
+  window.map.setActive();
 };
 
 window.page = {
-  setDisabledState: setDisabledState,
-  setActiveState: setActiveState,
+  setDisabledState,
+  setActiveState,
 };
 

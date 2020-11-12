@@ -37,5 +37,5 @@ const addPreview = (elementFile, elementPreviewFile) => {
 };
 
 window.file = {
-  addPreview: addPreview,
+  addPreview,
 };

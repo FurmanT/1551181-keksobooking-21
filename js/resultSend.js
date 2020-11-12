@@ -33,6 +33,6 @@ const showSuccess = () => {
 };
 
 window.resultSend = {
-  showError: showError,
-  showSuccess: showSuccess,
+  showError,
+  showSuccess,
 };

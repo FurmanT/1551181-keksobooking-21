@@ -174,12 +174,13 @@ const deleteActiveClassPin = () => {
   }
 };
 
-const fnActiveState = window.page.setActiveState();
 
 const onMainPinMouseDown = (evt) => {
   if (evt.button === 0) {
     evt.preventDefault();
-    fnActiveState();
+    if (blockMap.classList.contains("map--faded")) {
+      window.page.setActiveState();
+    }
 
     let startCoords = {
       x: evt.clientX,
@@ -228,7 +229,9 @@ mainPin.addEventListener('mousedown', onMainPinMouseDown);
 
 mainPin.addEventListener('keydown', (evt) => {
   if (evt.key === 'Enter') {
-    fnActiveState();
+    if (blockMap.classList.contains("map--faded")) {
+      window.page.setActiveState();
+    }
   }
 });
 
@@ -239,8 +242,8 @@ window.map = {
       heigth: MAIN_PIN_HEIGTH
     };
   },
-  setInitPointMainPin: setInitPointMainPin,
-  setActive: setActive,
-  setDisable: setDisable,
-  deletePin: deletePin,
+  setInitPointMainPin,
+  setActive,
+  setDisable,
+  deletePin,
 };

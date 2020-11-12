@@ -103,7 +103,7 @@ const remove = () => {
 };
 
 window.card = {
-  create: create,
-  remove: remove,
+  create,
+  remove,
 };
 

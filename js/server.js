@@ -53,7 +53,7 @@ const createRequest = (onSuccess, onError) => {
 };
 
 window.server = {
-  loadData: loadData,
-  uploadData: uploadData,
+  loadData,
+  uploadData,
 };
 

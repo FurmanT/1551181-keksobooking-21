@@ -195,8 +195,8 @@ const onAdFormSubmit = (evt) => {
 adForm.addEventListener('submit', onAdFormSubmit);
 
 window.form = {
-  setInitDisable: setInitDisable,
-  setActive: setActive,
-  setInitAddressFieldAd: setInitAddressFieldAd,
-  setMoveAddressFieldAd: setMoveAddressFieldAd,
+  setInitDisable,
+  setActive,
+  setInitAddressFieldAd,
+  setMoveAddressFieldAd,
 };

@@ -65,12 +65,12 @@ const showErrorOnBody = (error) => {
 };
 
 window.utils = {
-  getPriceTypeHousing: getPriceTypeHousing,
-  getDescTypeHousing: getDescTypeHousing,
-  getRandomBetween: getRandomBetween,
-  getRandomNumber: getRandomNumber,
-  getRandomArray: getRandomArray,
-  showErrorOnBody: showErrorOnBody,
+  getPriceTypeHousing,
+  getDescTypeHousing,
+  getRandomBetween,
+  getRandomNumber,
+  getRandomArray,
+  showErrorOnBody,
 };
 
 
